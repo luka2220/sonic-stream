@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/luka2220/sonic-stream/cmd/server"
+)
 
 func main() {
-	fmt.Println("server running")
+	server.NewServer(3000).Start()
 }
