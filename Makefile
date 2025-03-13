@@ -12,7 +12,7 @@ tidy: fmt
 
 # Start the go server
 start:
-	go run .
+	go run ./cmd
 
 # View the makefile commads
 view:
