@@ -4,6 +4,7 @@
 
 - [ ] Design api routes
 - [ ] Build functionality for converting medias file types
+- [ ] Build the image API endpoint
 - [x] Current file limit (image, video, audio) <= 100mb
 - [x] Think about how files are going to be sent over the wire (whole, chunks, stream) (whole file for now...)
 
