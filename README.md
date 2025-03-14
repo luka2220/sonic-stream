@@ -50,3 +50,7 @@ Note: The go standard library supports image file encoding and decoding for mult
   - .gif
   - .bmp
   - .webp
+
+### File Storage
+
+My current idea of storage, since this is just a side project, is to store in an sqlite db with a timestamp, and have some cron job clean up and remove files that are a day or more old. I will have the cron job run once every day. If this project needs scaling and needs a more concurrent approach I will forward requests to a message queue, which then get fed out to read and write files to an aws s3 bucket
