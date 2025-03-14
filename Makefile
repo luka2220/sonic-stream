@@ -10,6 +10,9 @@ vet:
 tidy: fmt
 	go mod tidy
 
+build:
+	go build -o sonic ./cmd
+
 # Start the go server
 start:
 	go run ./cmd
