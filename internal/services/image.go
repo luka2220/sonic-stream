@@ -9,21 +9,23 @@ import (
 	"strings"
 )
 
-type ImageType = string
-
-const (
-	PNG  ImageType = "png"
-	JPEG ImageType = "jpeg"
-	GIF  ImageType = "gif"
-	BMP  ImageType = "bmp"
-	WEBP ImageType = "webp"
-)
+var validImageTypes = map[string]string{
+	"PNG":  "png",
+	"JPEG": "jpeg",
+	"GIF":  "gif",
+	"BMP":  "bmp",
+	"WEBP": "webp",
+}
 
 type imageService struct {
 	file           *multipart.FileHeader
 	conversionType string
 	logger         *log.Logger
 }
+
+// NOTE:
+// - Router should just call NewImageService
+// - Everything else shouls be taken care of inside NewImageService
 
 func NewImageService(f *multipart.FileHeader, ct string) (*imageService, error) {
 	logger := log.New(os.Stdout, "\u001b[34m(imageService) \u001b", 1)
@@ -42,23 +44,15 @@ func NewImageService(f *multipart.FileHeader, ct string) (*imageService, error) 
 	}, nil
 }
 
+// Checks if the image file is a valid type the service accepts
 func imageFileType(file *multipart.FileHeader) (string, error) {
-	// Check if the file extension is a valid image file extension, return an error if it is not...
-
 	n := strings.Split(file.Filename, ".")
 	nImage := n[len(n)-1]
 
-	switch nImage {
-	case PNG:
-		return PNG, nil
-	case JPEG:
-		return JPEG, nil
-	case GIF:
-		return GIF, nil
-	case BMP:
-		return BMP, nil
-	case WEBP:
-		return WEBP, nil
+	for _, image := range validImageTypes {
+		if nImage == image {
+			return image, nil
+		}
 	}
 
 	return "", errors.New(fmt.Sprintf("InvalidImageType: Got %s", nImage))

@@ -45,11 +45,21 @@ Note: The go standard library supports image file encoding and decoding for mult
 ```
 
 - What Image file types take accept, each one will need to be parsed differently base on byte structure?
+
   - .png
   - .jpeg
   - .gif
   - .bmp
   - .webp
+
+- Library image format conversion:
+  1. PNG (import \_ "image/png")
+  2. JPEG (import \_ "image/jpeg")
+  3. GIF (import \_ "image/gif")
+     • BMP: import _ "golang.org/x/image/bmp"
+     • Provides a decoder for BMP. Encoding support is more limited.
+     • WebP: import _ "golang.org/x/image/webp"
+     • Provides a decoder for WebP. A built-in encoder is not included, so may need third-party or C bindings for WebP encoding.
 
 ### File Storage
 
