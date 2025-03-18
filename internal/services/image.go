@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"mime/multipart"
@@ -18,14 +17,21 @@ var validImageTypes = map[string]string{
 }
 
 type imageService struct {
-	file           *multipart.FileHeader
-	conversionType string
-	logger         *log.Logger
+	file          *multipart.FileHeader
+	BaseExtension string
+	ConvertType   string
+	logger        *log.Logger
 }
 
-// NOTE:
-// - Router should just call NewImageService
-// - Everything else shouls be taken care of inside NewImageService
+// Custom error messages including http status
+type HttpError struct {
+	Status  int
+	Message string
+}
+
+func (h HttpError) Error() string {
+	return h.Message
+}
 
 func NewImageService(f *multipart.FileHeader, ct string) (*imageService, error) {
 	logger := log.New(os.Stdout, "\u001b[34m(imageService) \u001b", 1)
@@ -38,9 +44,10 @@ func NewImageService(f *multipart.FileHeader, ct string) (*imageService, error) 
 	logger.Printf("Image File Type: %s\n", ifType)
 
 	return &imageService{
-		file:           f,
-		conversionType: ct,
-		logger:         logger,
+		file:          f,
+		ConvertType:   ct,
+		logger:        logger,
+		BaseExtension: ifType,
 	}, nil
 }
 
@@ -55,5 +62,7 @@ func imageFileType(file *multipart.FileHeader) (string, error) {
 		}
 	}
 
-	return "", errors.New(fmt.Sprintf("InvalidImageType: Got %s", nImage))
+	e := fmt.Sprintf("InvalidImageType: Got %s", nImage)
+
+	return "", HttpError{Message: e, Status: 400}
 }
