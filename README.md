@@ -2,6 +2,7 @@
 
 ## TODOs
 
+- [ ] Set up CI/CD
 - [ ] Design api routes
 - [ ] Build functionality for converting medias file types
 - [ ] Build the image API endpoint
@@ -24,7 +25,13 @@
 
 #### Immage Route - POST -> /api/image
 
-The max image file size is 120kb
+TODOS:
+
+- [ ] Throw/handle error for invalid file type
+- [ ] Abstract sending json response
+- [ ] Unit tests
+
+The max image file size is 150kb
 Note: The go standard library supports image file encoding and decoding for multiple formats
 
 - Structure of form-data key-value (http client request body)
