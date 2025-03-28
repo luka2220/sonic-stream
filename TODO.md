@@ -1,9 +1,9 @@
 # TODO Tasks
 
 - [ ] Set up CI/CD
-- [ ] Design api routes
+- [ ] Setup docker with air
 - [ ] Build functionality for converting medias file types
-- [ ] Build the image API endpoint
+- [ ] Build the image service functionality
 - [x] Current file limit (image, video, audio) <= 100mb
 - [x] Think about how files are going to be sent over the wire (whole, chunks, stream) (whole file for now...)
 
@@ -25,8 +25,9 @@
 
 TODOS:
 
-- [ ] Throw/handle error for invalid file type
-- [ ] Abstract sending json response
+- [x] Throw/handle error for invalid file type
+- [x] Abstract sending json response
+- [ ] Convert between valid image types
 - [ ] Unit tests
 
 The max image file size is 150kb

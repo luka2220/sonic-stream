@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/luka2220/sonic-stream/cmd/server/routes"
 )
@@ -22,17 +21,14 @@ func NewServer(port string) *Server {
 }
 
 func (s Server) Start() {
-	// NOTE: ugly logs atm
-	logger := log.New(os.Stdout, "", 1)
-
 	rootMux := http.NewServeMux()
 
 	// Routers
-	apiRouter := routes.NewAPIRoute(logger)
-	
+	apiRouter := routes.NewAPIRoute()
+
 	// Register Routers
-	rootMux.Handle(apiRouter.Base, http.StripPrefix("/api", apiRouter.Mux));
-	
+	rootMux.Handle(apiRouter.Base, http.StripPrefix("/api", apiRouter.Mux))
+
 	err := http.ListenAndServe(s.host, rootMux)
 	if err != nil {
 		log.Fatalf("Error starting the server on port: %s\n%s", s.host, err.Error())
