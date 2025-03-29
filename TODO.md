@@ -50,6 +50,8 @@ Note: The go standard library supports image file encoding and decoding for mult
 }
 ```
 
+- We need to also validate and verify file types again on the server side to make sure uploaded files are actually safe and expected (e.g., check MIME types, magic bytes, etc.)
+
 - What Image file types take accept, each one will need to be parsed differently base on byte structure?
 
   - .png
