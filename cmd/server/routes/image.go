@@ -68,11 +68,10 @@ func validateImageFileExtensions(f *multipart.FileHeader, c string) (image_model
 		return imageModel, nil
 	}
 
-	invalidFileTypes := image_model.FileMetaData{BaseExtention: imgType, ConvertExtension: c}
 	errMsg := fmt.Sprintf("400 POST <- invalid file extensions, got=(%s, %s)", imgType, c)
 	clientResponseMsg := fmt.Sprintf("Invalid file extension type: %s, %s (check docs for valid image extensions)", imgType, c)
 
-	return invalidFileTypes, ServerError{Message: errMsg, ClientMessage: clientResponseMsg, Status: 400}
+	return image_model.FileMetaData{}, ServerError{Message: errMsg, ClientMessage: clientResponseMsg, Status: 400}
 }
 
 // Validate the incoming request has both file field and convert field
@@ -93,7 +92,6 @@ func validateIncomingRequest(f []*multipart.FileHeader, c string) (image_model.F
 		}
 	}
 
-	// NOTE: At this point we can assume the incoming request has an image file
 	r, err := validateImageFileExtensions(f[0], c)
 	if err != nil {
 		return image_model.FileMetaData{}, err
