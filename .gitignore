@@ -1,3 +1,5 @@
 .env
 sonic
 tmp
+.DS_Store
+./cmd/static/*

@@ -1,4 +1,4 @@
-package routes
+package api
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/luka2220/sonic-stream/internal/models/image"
+	image_model "github.com/luka2220/sonic-stream/internal/models/image"
 	"github.com/luka2220/sonic-stream/internal/services"
 )
 
@@ -27,11 +27,12 @@ var logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 })).With("service", "image-api")
 
 type imageAPIResponse struct {
-	Message string `json:"message"`
+	DownloadUrl string `json:"download_url"`
 }
 
 func createResponse(m string) ([]byte, error) {
-	r := imageAPIResponse{Message: m}
+	url := fmt.Sprintf("http://localhost:8080/download/%s", m)
+	r := imageAPIResponse{DownloadUrl: url}
 	b, err := json.Marshal(r)
 	if err != nil {
 		return nil, errors.New("JsonMarshalError")
@@ -86,8 +87,8 @@ func validateIncomingRequest(f []*multipart.FileHeader, c string) (image_model.F
 
 	if c == "" {
 		return image_model.FileMetaData{}, ServerError{
-			Message:       fmt.Sprintf("400 POST <- client supplied no convert file type"),
-			ClientMessage: fmt.Sprintf("Invalid post schema, expecting string value 'convert'"),
+			Message:       "400 POST <- client supplied no convert file type",
+			ClientMessage: "Invalid post schema, expecting string value 'convert'",
 			Status:        400,
 		}
 	}
@@ -100,44 +101,54 @@ func validateIncomingRequest(f []*multipart.FileHeader, c string) (image_model.F
 	return r, nil
 }
 
-func apiImageHandler() func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json'")
+func apiImageHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Access-Control-Allow-Origin", "http://localhost:5173")
+	w.Header().Add("Access-Control-Allow-Headers", "*")
+	w.Header().Add("Content-Type", "application/json'")
 
-		if err := r.ParseMultipartForm(250000); err != nil {
-			InternalServerError(ServerError{
-				Message:       err.Error(),
-				W:             w,
-				Status:        500,
-				L:             logger,
-				ClientMessage: "Server Error",
-			})
-			return
-		}
-
-		imageFile := r.MultipartForm.File["file"]
-		convertType := r.PostForm.Get("convert")
-
-		imageMetaData, err := validateIncomingRequest(imageFile, convertType)
-		if err != nil {
-			e := err.(ServerError)
-			e.L = logger
-			e.W = w
-			ClientError(e)
-			return
-		}
-
-		// TODO: Perform some actions from the image service type?
-		services.NewImageService(imageMetaData)
-
-		msg := fmt.Sprintf("%s -> %s", imageMetaData.BaseExtention, imageMetaData.ConvertExtension)
-		bytes, err := createResponse(msg)
-		if err != nil {
-			InternalServerError(ServerError{err.Error(), "internal server error", 500, w, logger})
-			return
-		}
-
-		w.WriteHeader(200)
-		w.Write(bytes)
+	if err := r.ParseMultipartForm(250000); err != nil {
+		InternalServerError(ServerError{
+			Message:       err.Error(),
+			W:             w,
+			Status:        500,
+			L:             logger,
+			ClientMessage: "Server Error",
+		})
+		return
 	}
+
+	imageFile := r.MultipartForm.File["file"]
+	convertType := r.PostForm.Get("convert")
+
+	imageMetaData, err := validateIncomingRequest(imageFile, convertType)
+	if err != nil {
+		e := err.(ServerError)
+		e.L = logger
+		e.W = w
+		ClientError(e)
+		return
+	}
+
+	is := services.NewImageService(imageMetaData)
+	convertedFileName, err := is.GetConvertedImage()
+	if err != nil {
+		InternalServerError(ServerError{
+			err.Error(),
+			"something went wrong on our end",
+			500,
+			w,
+			logger,
+		})
+		return
+	}
+
+	bytes, err := createResponse(convertedFileName)
+	if err != nil {
+		InternalServerError(ServerError{err.Error(), "something went wrong on our end", 500, w, logger})
+		return
+	}
+
+	w.WriteHeader(200)
+	w.Write(bytes)
+	logger.Info(fmt.Sprintf("200 %s created under ./cmd/static", convertedFileName))
 }

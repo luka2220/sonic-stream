@@ -1,11 +1,7 @@
-# TODO Tasks
+# TODO Tasks Main
 
 - [ ] Set up CI/CD
 - [ ] Setup docker with air
-- [ ] Build functionality for converting medias file types
-- [ ] Build the image service functionality
-- [x] Current file limit (image, video, audio) <= 100mb
-- [x] Think about how files are going to be sent over the wire (whole, chunks, stream) (whole file for now...)
 
 ### API Routes
 
@@ -23,12 +19,17 @@
 
 #### Immage Route - POST -> /api/image
 
-TODOS:
+TODOS (image-service):
 
-- [x] Throw/handle error for invalid file type
-- [x] Abstract sending json response
-- [ ] Convert between valid image types
-- [ ] Unit tests
+- [ ] #5: Create a valid response to the client including the download url for the converted image
+- [ ] #5.5: Create the download url route that gets sent to the client in the response
+- [ ] #6: Build functionality for converting medias file types
+- [ ] #7: Build the image service functionality
+- [ ] #8: Unit tests
+- [x] #1: Add logging for successful image upload
+- [x] #2: Current file limit (image, video, audio) <= 500kb
+- [x] #3: Throw/handle error for invalid file type
+- [x] #4: Abstract sending json response
 
 The max image file size is 150kb
 Note: The go standard library supports image file encoding and decoding for multiple formats
@@ -39,7 +40,7 @@ Note: The go standard library supports image file encoding and decoding for mult
   - generate: (image file type to generate) -> string
 
 - Response to endpoint:
-  - For a successful response the client will need to make a second get request to the "downloaded_url" to download the stored file
+  - For a successful response the client will need to make a second get request to the "download_url" to download the stored file
   - To acomplish this the converted filw will be stored in the db with a short uuid
   - The POST reqest from /api/image responsed with the dowload url with the file uuid
   - The client will then use that route i.e /api/image/download/file_id to get the downloaded converted file

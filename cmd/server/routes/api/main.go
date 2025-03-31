@@ -1,4 +1,4 @@
-package routes
+package api
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ type APIRouter struct {
 
 func NewAPIRoute() *APIRouter {
 	apiMux := http.NewServeMux()
-	apiMux.HandleFunc("POST /image", apiImageHandler())
+	apiMux.HandleFunc("POST /image", apiImageHandler)
 
 	return &APIRouter{
 		Base: "/api/",

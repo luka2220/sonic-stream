@@ -1,14 +1,22 @@
 // Image file class operation
 class ImageFile {
-  imgFile: File;
+  data: File;
 
   constructor(imgFile: File) {
-    this.imgFile = imgFile;
+    this.data = imgFile;
+
+    if (!this.validateImageSize()) {
+      console.error('image size too big, must be less than 500kb');
+      throw new Error('InvalidImageSize');
+    }
   }
 
-  // Print out the byte contents of the file
+  private validateImageSize(): boolean {
+    return this.data.size < 500_000 ? true : false;
+  }
+
   async displayFileContents() {
-    const buffer = await this.imgFile.arrayBuffer();
+    const buffer = await this.data.arrayBuffer();
     for (const b of new Uint8Array(buffer)) {
       console.log(b);
     }
@@ -20,17 +28,21 @@ export class PNGImge extends ImageFile {
     super(pngFile);
   }
 
-  private async fileToBuffer(): Promise<Uint8Array> {
-    const buff = await this.imgFile.arrayBuffer();
-    return new Uint8Array(buff);
-  }
-
-  // Parse the contents of the png file
-  async parsePng() {
+  async validatePng() {
     try {
-      // TODO: Parse the png file, if the structure is not a valid png format throw an error and catch it immedietly
-      const bufferArray = await this.fileToBuffer();
-      throw new Error('InvalidPNGByteStructureError');
+      const buffer = await this.data.arrayBuffer();
+      const bufferArray = new Uint8Array(buffer);
+
+      const expectedPNGSignature = [
+        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+      ];
+      const actual = bufferArray.subarray(0, 8);
+
+      for (let i = 0; i < expectedPNGSignature.length; i++) {
+        if (actual[i] !== expectedPNGSignature[i]) {
+          throw new Error('InvalidPNGByteStructureError');
+        }
+      }
     } catch (e) {
       if (e instanceof Error && e.message === 'InvalidPNGByteStructureError') {
         console.error('Byte structure of image is not png formated...\n');

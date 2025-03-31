@@ -5,7 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/luka2220/sonic-stream/cmd/server/routes"
+	"github.com/luka2220/sonic-stream/cmd/server/routes/api"
+	"github.com/luka2220/sonic-stream/cmd/server/routes/download"
 )
 
 type Server struct {
@@ -23,11 +24,11 @@ func NewServer(port string) *Server {
 func (s Server) Start() {
 	rootMux := http.NewServeMux()
 
-	// Routers
-	apiRouter := routes.NewAPIRoute()
+	apiRouter := api.NewAPIRoute()
+	downloadRouter := download.NewDownloadRouter()
 
-	// Register Routers
 	rootMux.Handle(apiRouter.Base, http.StripPrefix("/api", apiRouter.Mux))
+	rootMux.Handle(downloadRouter.Base, http.StripPrefix("/download", downloadRouter.Mux))
 
 	err := http.ListenAndServe(s.host, rootMux)
 	if err != nil {
