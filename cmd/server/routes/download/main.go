@@ -31,4 +31,3 @@ func NewDownloadRouter() DownloadRouter {
 func downloadImagePath(w http.ResponseWriter, r *http.Request) {
 	logger.Info(fmt.Sprintf("%s image file requested for download", r.URL.Path))
 }
-

@@ -78,6 +78,7 @@ func (is imageService) convertPNG() (string, error) {
 	return "", nil
 }
 
+// TODO
 // Encode the base image.Image into a .jpeg file format
 // Creates a file stored at ./cmd/static that hold the contents of the jpeg image
 // Returns the jpeg file name created

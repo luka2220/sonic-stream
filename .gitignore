@@ -2,4 +2,5 @@
 sonic
 tmp
 .DS_Store
-./cmd/static/*
+cmd/static/*
+.vscode
