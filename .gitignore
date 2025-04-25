@@ -1,6 +1,6 @@
 .env
-sonic
-tmp
 .DS_Store
-cmd/static/*
 .vscode
+
+node_modules
+

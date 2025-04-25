@@ -1,0 +1,36 @@
+{
+  "name": "sonic-stream",
+  "version": "1.0.0",
+  "description": "SonicStream is an ultra-fast, lightweight multimedia conversion tool that makes it effortless to transform images and other media between formats.",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "nodemon src/app.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luka2220/sonic-stream.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/luka2220/sonic-stream/issues"
+  },
+  "homepage": "https://github.com/luka2220/sonic-stream#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
+  }
+}
